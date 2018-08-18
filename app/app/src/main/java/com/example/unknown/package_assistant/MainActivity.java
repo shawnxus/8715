@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Entering ReceiverActivity");
                         startActivity(intent);
                         break;
-                    case "Pickup Point":
+                    case "Agent":
                         intent = new Intent(MainActivity.this, TransferActivity.class);
                         System.out.println("Entering TransferActivity");
                         startActivity(intent);
