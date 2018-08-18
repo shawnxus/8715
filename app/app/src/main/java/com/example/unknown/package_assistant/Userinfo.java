@@ -3,9 +3,6 @@ package com.example.unknown.package_assistant;
 import java.util.ArrayList;
 
 public class Userinfo {
-    static final String DB_URL = "jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false";
-    static final String USERNAME = "root";
-    static final String PASSWORD = "wang";
     static ArrayList<User> Users;
     static void add(User user){
         if(Users == null){

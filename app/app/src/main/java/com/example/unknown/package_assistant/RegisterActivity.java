@@ -10,14 +10,19 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class RegisterActivity extends AppCompatActivity {
     TextView Username, Password, Password2, Email, Address;
@@ -26,7 +31,6 @@ public class RegisterActivity extends AppCompatActivity {
     RadioButton RButton;
     int roleID;
 
-    String JSON_STRING;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,40 +64,53 @@ public class RegisterActivity extends AppCompatActivity {
             for(User u : Userinfo.Users){
                 System.out.println(u.toString());
             }
-            new BackgroundTask().execute();
-//        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-//        startActivity(intent);
+            BackgoundTask1 backgoundTask = new BackgoundTask1();
+            backgoundTask.execute(Username.getText().toString(),Password.getText().toString(),Email.getText().toString(),Address.getText().toString(),"receiver");
+            finish();
+//            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+//            startActivity(intent);
     }
 
-    class BackgroundTask extends AsyncTask<Void,Void,String>{
-
+    class BackgoundTask1 extends AsyncTask<String, Void, String>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         @Override
-        protected String doInBackground(Void... voids) {
+        protected String doInBackground(String... args) {
+            String name, password, email, address, role;
+            email = args[0];
+            password = args[1];
+            address = args[2];
+            name = args[3];
+            role = args[4];
             try {
-                URL url = new URL(Userinfo.DB_URL);
+                URL url = new URL(BackgroundTask.DB_URL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
+                String dataString = URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"+
+                        URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")+"&"+
+                        URLEncoder.encode("address","UTF-8")+"="+URLEncoder.encode(address,"UTF-8")+"&"+
+                        URLEncoder.encode("name","UTF-8")+"="+URLEncoder.encode(name,"UTF-8")+"&"+
+                        URLEncoder.encode("role","UTF-8")+"="+URLEncoder.encode(role,"UTF-8");
+                bufferedWriter.write(dataString);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
                 InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder stringBuilder = new StringBuilder();
-                while((JSON_STRING = bufferedReader.readLine())!=null){
-                    stringBuilder.append(JSON_STRING+"\n");
-                }
-                bufferedReader.close();
                 inputStream.close();
                 httpURLConnection.disconnect();
-                return stringBuilder.toString().trim();
+                return "One row of data inserted..";
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
 
@@ -104,7 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println(result);
+            Toast.makeText(getApplicationContext(), result,Toast.LENGTH_LONG).show();
         }
     }
 }

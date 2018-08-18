@@ -1,3 +1,3 @@
 public enum ClientType {
-    Receiver, PickPoint, Deliverer;
+    receiver, agent, deliverer, admin;
 }

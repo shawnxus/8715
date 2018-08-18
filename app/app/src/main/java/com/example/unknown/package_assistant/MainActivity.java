@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void infoCheck(String uname, String pwd){
         currentUser = Userinfo.search(uname);
+        //new BackgroundTask().execute();
         if(currentUser != null){
             System.out.println("Existing accounts:");
             System.out.println(currentUser.toString());
