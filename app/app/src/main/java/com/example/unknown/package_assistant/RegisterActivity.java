@@ -25,7 +25,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class RegisterActivity extends AppCompatActivity {
-    TextView Username, Password, Password2, Email, Address;
+    TextView Username, Password, Password2, Email, Address,Phone;
     Button Submit;
     RadioGroup radioGroup;
     RadioButton RButton;
@@ -41,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         Password2 = (EditText)findViewById(R.id.etRPassword2);
         Email = (EditText)findViewById(R.id.etREmail);
         Address = (EditText)findViewById(R.id.etRAddress);
+        Phone = (EditText)findViewById(R.id.etRPhone);
         Submit = (Button)findViewById(R.id.rbtSubmit);
         radioGroup = (RadioGroup) findViewById(R.id.rg);
 
@@ -49,14 +50,14 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                roleID = radioGroup.getCheckedRadioButtonId();
                RButton = (RadioButton)findViewById(roleID);
-               infoCheck(Username.getText().toString(),Password.getText().toString(),Password2.getText().toString(),Email.getText().toString(),Address.getText().toString(),RButton.getText().toString());
+               infoCheck(Username.getText().toString(),Password.getText().toString(),Password2.getText().toString(),Email.getText().toString(),Address.getText().toString(),Phone.getText().toString(),RButton.getText().toString());
             }
         });
     }
 
-    private void infoCheck(String name, String password, String password2, String email, String address, String role){
+    private void infoCheck(String name, String password, String password2, String email, String address, String phone, String role){
             //System.out.println("password matched!");
-            User currentUser = new User(name, password,email,address,role);
+            User currentUser = new User(name, password,email,address,Integer.parseInt(phone),role);
             Userinfo.add(currentUser);
             System.out.println("Following account has been registered:");
             System.out.println(currentUser.toString());
@@ -65,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
                 System.out.println(u.toString());
             }
             BackgoundTask1 backgoundTask = new BackgoundTask1();
-            backgoundTask.execute(Username.getText().toString(),Password.getText().toString(),Email.getText().toString(),Address.getText().toString(),"receiver");
+            backgoundTask.execute(Email.getText().toString(),Password.getText().toString(),Address.getText().toString(),Username.getText().toString(),Phone.getText().toString(),"receiver");
             finish();
 //            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
 //            startActivity(intent);
@@ -79,12 +80,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... args) {
-            String name, password, email, address, role;
+            String name, password, email, address, role, phone;
             email = args[0];
             password = args[1];
             address = args[2];
             name = args[3];
-            role = args[4];
+            phone = args[4];
+            role = args[5];
             try {
                 URL url = new URL(BackgroundTask.DB_URL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
@@ -96,6 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
                         URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")+"&"+
                         URLEncoder.encode("address","UTF-8")+"="+URLEncoder.encode(address,"UTF-8")+"&"+
                         URLEncoder.encode("name","UTF-8")+"="+URLEncoder.encode(name,"UTF-8")+"&"+
+                        URLEncoder.encode("phone_number","UTF-8")+"="+URLEncoder.encode(phone,"UTF-8")+"&"+
                         URLEncoder.encode("role","UTF-8")+"="+URLEncoder.encode(role,"UTF-8");
                 bufferedWriter.write(dataString);
                 bufferedWriter.flush();

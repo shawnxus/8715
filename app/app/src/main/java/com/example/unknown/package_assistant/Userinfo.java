@@ -14,14 +14,14 @@ public class Userinfo {
                 Users.add(user);
         }
     }
-   static User search(String name){
+   static User search(String email){
         if(Users == null || Users.size() == 0) {
             Users = new ArrayList<User>();
             System.out.println("seach contains pro");
         }
         else{
             for(User u : Users) {
-                if (u.name.toString() == name.toString())
+                if (u.email.toString() == email.toString())
                     System.out.println("Found user info: "+u.toString());
                     return u;
             }
@@ -33,5 +33,6 @@ public class Userinfo {
         us.password = user.password;
         us.email = user.email;
         us.address = user.address;
+        us.phone = user.phone;
     }
 }
